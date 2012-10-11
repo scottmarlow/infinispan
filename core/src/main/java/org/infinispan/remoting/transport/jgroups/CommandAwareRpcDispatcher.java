@@ -77,6 +77,7 @@ public class CommandAwareRpcDispatcher extends RpcDispatcher {
    private ExecutorService asyncExecutor;
    private final InboundInvocationHandler inboundInvocationHandler;
    private static final Log log = LogFactory.getLog(CommandAwareRpcDispatcher.class);
+   private static final Log dump = LogFactory.getLog(CommandAwareRpcDispatcher.class);
    private static final boolean trace = log.isTraceEnabled();
    private static final boolean FORCE_MCAST = Boolean.getBoolean("infinispan.unsafe.force_multicast");
    private final JGroupsTransport transport;
@@ -197,7 +198,11 @@ public class CommandAwareRpcDispatcher extends RpcDispatcher {
       if (isValid(req)) {
          ReplicableCommand cmd = null;
          try {
-            Object o = req_marshaller.objectFromBuffer(req.getRawBuffer(), req.getOffset(), req.getLength());
+            final byte[] byteBuffer = req.getRawBuffer();
+            if (dump.isTraceEnabled()) {
+                dump.tracef("CommandAwareRpcDispatcher.handle request: hexdump: %s", Util.characterDump(byteBuffer));
+            }
+            Object o = req_marshaller.objectFromBuffer(byteBuffer, req.getOffset(), req.getLength());
             if (o != null) {
                cmd = (ReplicableCommand) o;
                return executeCommand(cmd, req);

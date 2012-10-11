@@ -551,6 +551,14 @@ public final class Util {
       return buf.toString();
    }
 
+   public static String characterDump(byte[] buffer) {
+      StringBuilder buf = new StringBuilder(buffer.length << 1);
+      for (byte b : buffer)
+         addHexChar(buf, b);
+
+      return buf.toString();
+   }
+
    public static String hexDump(ByteBuffer buffer) {
       byte[] data = new byte[buffer.remaining()];
       int pos = buffer.position();
@@ -566,6 +574,20 @@ public final class Util {
    private static void addHexByte(StringBuilder buf, byte b) {
       buf.append(HEX_VALUES.charAt((b & 0xF0) >> 4))
          .append(HEX_VALUES.charAt((b & 0x0F)));
+   }
+
+   private static void addHexChar(StringBuilder buf, byte b) {
+       final int highnibble = (b & 0xF0) >> 4;
+       final int lownibble = (b & 0x0F);
+       if(b < ' ') {
+           buf.append("0x")
+           .append(HEX_VALUES.charAt(highnibble))
+           .append(HEX_VALUES.charAt(lownibble))
+           .append(" ");
+       }
+       else {
+           buf.append((char)b);
+       }
    }
 
    public static Double constructDouble(Class<?> type, Object o) {
