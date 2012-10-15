@@ -60,16 +60,23 @@ public final class JBossMarshaller extends AbstractJBossMarshaller implements St
          // Override the class resolver with one that can detect injected
          // classloaders via AdvancedCache.with(ClassLoader) calls.
          classResolver = new EmbeddedContextClassResolver(cl, icc);
+         log.infof("JBossMarshaller.inject classResolver is not configured in globalcfg, will use a new EmbeddedContextClassResolver, this=%s",this);
       }
 
+      log.infof("JBossMarshaller.inject classResolver = %s, this=%s",
+              classResolver,
+              this);
       baseCfg.setClassResolver(classResolver);
    }
 
    @Override
    public void stop() {
       super.stop();
+      log.infof("JBossMarshaller.stop nulling classResolver this=%s",
+               this);
       // Just in case, to avoid leaking class resolver which references classloader
       baseCfg.setClassResolver(null);
+
    }
 
    @Override
