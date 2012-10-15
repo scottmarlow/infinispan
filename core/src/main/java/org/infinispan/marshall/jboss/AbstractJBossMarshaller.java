@@ -221,6 +221,11 @@ public abstract class AbstractJBossMarshaller extends AbstractMarshaller impleme
    }
 
    @Override
+   public void start() {
+      // No-op
+   }
+
+   @Override
    public void stop() {
        // Clear class cache
       marshallableTypeHints.clear();
