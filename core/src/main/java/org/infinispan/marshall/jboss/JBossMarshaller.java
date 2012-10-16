@@ -55,7 +55,8 @@ public final class JBossMarshaller extends AbstractJBossMarshaller implements St
 
    public void inject(ExternalizerTable externalizerTable, Configuration cfg,
          InvocationContextContainer icc, GlobalConfiguration globalCfg) {
-      log.debug("Using JBoss Marshalling");
+      log.info("JBossMarshaller.inject() Using JBoss Marshalling this=" + this);
+
       this.externalizerTable = externalizerTable;
       this.globalCfg = globalCfg;
       this.cfg = cfg;
@@ -64,6 +65,7 @@ public final class JBossMarshaller extends AbstractJBossMarshaller implements St
 
    @Override
    public void start() {
+      log.info("JBossMarshaller.start() invoked on this=" + this);
       super.start();
 
       baseCfg.setObjectTable(externalizerTable);
@@ -74,10 +76,10 @@ public final class JBossMarshaller extends AbstractJBossMarshaller implements St
          // classloaders via AdvancedCache.with(ClassLoader) calls.
          ClassLoader cl = cfg == null ? globalCfg.getClassLoader() : cfg.getClassLoader();
          classResolver = new EmbeddedContextClassResolver(cl, icc);
-         log.infof("JBossMarshaller.inject classResolver is not configured in globalcfg, will use a new EmbeddedContextClassResolver, this=%s",this);
+         log.infof("JBossMarshaller.start() classResolver is not configured in globalcfg, will use a new EmbeddedContextClassResolver(cl=%s,icc=%s), this=%s",cl,icc,this);
       }
 
-      log.infof("JBossMarshaller.inject classResolver = %s, this=%s",
+      log.infof("JBossMarshaller.start() setting classResolver = %s, this=%s",
               classResolver,
               this);
       baseCfg.setClassResolver(classResolver);
@@ -86,7 +88,7 @@ public final class JBossMarshaller extends AbstractJBossMarshaller implements St
    @Override
    public void stop() {
       super.stop();
-      log.infof("JBossMarshaller.stop nulling classResolver this=%s",
+      log.infof("JBossMarshaller.stop() nulling classResolver this=%s",
                this);
       // Just in case, to avoid leaking class resolver which references classloader
       baseCfg.setClassResolver(null);

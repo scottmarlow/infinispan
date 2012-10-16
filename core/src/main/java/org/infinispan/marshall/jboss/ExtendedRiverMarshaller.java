@@ -19,6 +19,8 @@
 
 package org.infinispan.marshall.jboss;
 
+import org.infinispan.util.logging.BasicLogFactory;
+import org.jboss.logging.BasicLogger;
 import org.jboss.marshalling.MarshallingConfiguration;
 import org.jboss.marshalling.reflect.SerializableClassRegistry;
 import org.jboss.marshalling.river.RiverMarshaller;
@@ -36,10 +38,13 @@ import java.io.IOException;
 public class ExtendedRiverMarshaller extends RiverMarshaller {
 
    private RiverCloseListener listener;
+   private static final BasicLogger log = BasicLogFactory.getLog(ExtendedRiverMarshaller.class);
 
    public ExtendedRiverMarshaller(RiverMarshallerFactory factory,
          SerializableClassRegistry registry, MarshallingConfiguration cfg) throws IOException {
       super(factory, registry, cfg);
+      log.infof("ExtendedRiverMarshaller ctor for " + this);
+       Thread.dumpStack();
    }
 
    @Override
@@ -48,6 +53,8 @@ public class ExtendedRiverMarshaller extends RiverMarshaller {
       if (listener != null) {
          listener.closeMarshaller();
       }
+      log.infof("ExtendedRiverMarshaller.finish for " + this);
+      Thread.dumpStack();
    }
 
    void setCloseListener(RiverCloseListener listener) {
